@@ -10,7 +10,7 @@ import { PublicStackParamsList } from '@/routes/PublicRoutes';
 
 import { schema } from './schema';
 
-interface RegisterFormParams {
+export interface RegisterFormParams {
   email: string;
   name: string;
   password: string;

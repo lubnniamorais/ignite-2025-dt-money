@@ -7,6 +7,8 @@ import { AppButton } from '@/components/AppButton';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { PublicStackParamsList } from '@/routes/PublicRoutes';
 import { schema } from './schema';
+import { useAuthContext } from '@/context/auth.context';
+import { AxiosError } from 'axios';
 
 export interface FormLoginParams {
   email: string;
@@ -28,7 +30,17 @@ export const LoginForm = () => {
 
   const navigation = useNavigation<NavigationProp<PublicStackParamsList>>();
 
-  const onSubmit = async () => {};
+  const { handleAuthenticate } = useAuthContext();
+
+  const onSubmit = async ({ email, password }: FormLoginParams) => {
+    try {
+      await handleAuthenticate({ email, password });
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        alert(error.response?.data);
+      }
+    }
+  };
 
   return (
     <>
