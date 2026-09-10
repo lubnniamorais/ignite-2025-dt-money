@@ -9,8 +9,10 @@ import { AppInput } from '@/components/AppInput';
 import { PublicStackParamsList } from '@/routes/PublicRoutes';
 
 import { schema } from './schema';
+import { useAuthContext } from '@/context/auth.context';
+import { AxiosError } from 'axios';
 
-export interface RegisterFormParams {
+export interface FormRegisterParams {
   email: string;
   name: string;
   password: string;
@@ -22,7 +24,7 @@ export const RegisterForm = () => {
     control,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<RegisterFormParams>({
+  } = useForm<FormRegisterParams>({
     defaultValues: {
       email: '',
       name: '',
@@ -32,9 +34,24 @@ export const RegisterForm = () => {
     resolver: zodResolver(schema),
   });
 
+  const { handleRegister } = useAuthContext();
+
   const navigation = useNavigation<NavigationProp<PublicStackParamsList>>();
 
-  const onSubmit = async () => {};
+  const onSubmit = async ({
+    name,
+    email,
+    password,
+    confirmPassword,
+  }: FormRegisterParams) => {
+    try {
+      await handleRegister({ name, email, password, confirmPassword });
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        alert(error.response?.data);
+      }
+    }
+  };
 
   return (
     <>
