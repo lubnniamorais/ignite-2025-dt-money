@@ -1,18 +1,25 @@
 import './src/styles/global.css';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { SnackBarContextProvider } from '@/context/snackbar.context';
 import { AuthContextProvider } from '@/context/auth.context';
+import { BottomSheetProvider } from '@/context/bottomsheet.context';
+
+import { Snackbar } from '@/components/Snackbar';
 
 import NavigationRoutes from '@/routes';
-import { Snackbar } from '@/components/Snackbar';
 
 export default function App() {
   return (
-    <SnackBarContextProvider>
-      <AuthContextProvider>
-        <NavigationRoutes />
-        <Snackbar />
-      </AuthContextProvider>
-    </SnackBarContextProvider>
+    <GestureHandlerRootView className='flex-1'>
+      <SnackBarContextProvider>
+        <AuthContextProvider>
+          <BottomSheetProvider>
+            <NavigationRoutes />
+            <Snackbar />
+          </BottomSheetProvider>
+        </AuthContextProvider>
+      </SnackBarContextProvider>
+    </GestureHandlerRootView>
   );
 }
