@@ -6,6 +6,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useBottomSheetContext } from '@/context/bottomsheet.context';
 import { CreateTransactionInterface } from '@/shared/interfaces/https/create-transaction-request';
 import { colors } from '@/shared/colors';
+import { TransactionTypeSelector } from '../SelectType';
 
 export const NewTransaction = () => {
   const { closeBottomSheet } = useBottomSheetContext();
@@ -61,6 +62,13 @@ export const NewTransaction = () => {
           minValue={0}
           onChangeValue={(value) => {
             setTransactionData('value', value ?? 0);
+          }}
+        />
+
+        <TransactionTypeSelector
+          typeId={transaction.typeId}
+          setTransactionType={(typeId) => {
+            setTransactionData('typeId', typeId);
           }}
         />
       </View>
