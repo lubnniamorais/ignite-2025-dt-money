@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { Platform } from 'react-native';
 import { AppError } from '../helpers/AppError';
+import { addTokenToRequest } from '../helpers/axios.helper';
 
 // Teremos duas URLs de acordo com o sistema operacional, durante o desenvolvimento
 const baseURL = Platform.select({
@@ -11,6 +12,8 @@ const baseURL = Platform.select({
 export const api = axios.create({
   baseURL,
 });
+
+addTokenToRequest(api);
 
 api.interceptors.response.use(
   (config) => config,

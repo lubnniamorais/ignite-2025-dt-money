@@ -3,6 +3,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { SnackBarContextProvider } from '@/context/snackbar.context';
 import { AuthContextProvider } from '@/context/auth.context';
+import { TransactionContextProvider } from '@/context/transaction.context';
 import { BottomSheetProvider } from '@/context/bottomsheet.context';
 
 import { Snackbar } from '@/components/Snackbar';
@@ -14,10 +15,12 @@ export default function App() {
     <GestureHandlerRootView className='flex-1'>
       <SnackBarContextProvider>
         <AuthContextProvider>
-          <BottomSheetProvider>
-            <NavigationRoutes />
-            <Snackbar />
-          </BottomSheetProvider>
+          <TransactionContextProvider>
+            <BottomSheetProvider>
+              <NavigationRoutes />
+              <Snackbar />
+            </BottomSheetProvider>
+          </TransactionContextProvider>
         </AuthContextProvider>
       </SnackBarContextProvider>
     </GestureHandlerRootView>
