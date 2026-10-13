@@ -8,9 +8,6 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { PublicStackParamsList } from '@/routes/PublicRoutes';
 import { schema } from './schema';
 import { useAuthContext } from '@/context/auth.context';
-import { AxiosError } from 'axios';
-import { useSnackbarContext } from '@/context/snackbar.context';
-import { AppError } from '@/shared/helpers/AppError';
 import { useErrorHandler } from '@/shared/hooks/useErrorHandler';
 import { colors } from '@/shared/colors';
 

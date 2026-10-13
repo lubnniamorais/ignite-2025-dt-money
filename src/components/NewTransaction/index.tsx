@@ -1,15 +1,35 @@
 import { useState } from 'react';
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import CurrencyInput from 'react-native-currency-input';
 import { MaterialIcons } from '@expo/vector-icons';
+import { z as zod } from 'zod';
 
 import { useBottomSheetContext } from '@/context/bottomsheet.context';
 import { CreateTransactionInterface } from '@/shared/interfaces/https/create-transaction-request';
 import { colors } from '@/shared/colors';
+
 import { TransactionTypeSelector } from '../SelectType';
+import { SelectCategoryModal } from '../SelectCategoryModal';
+import { transactionSchema } from './schema';
+import { AppButton } from '../AppButton';
+import { ErrorMessage } from '../ErrorMessage';
+import { useTransactionContext } from '@/context/transaction.context';
+import { useErrorHandler } from '@/shared/hooks/useErrorHandler';
+
+type ValidationErrorsTypes = Record<keyof CreateTransactionInterface, string>;
 
 export const NewTransaction = () => {
   const { closeBottomSheet } = useBottomSheetContext();
+  const { createTransaction } = useTransactionContext();
+  const { handlerError } = useErrorHandler();
+
+  const [loading, setLoading] = useState(false);
 
   const [transaction, setTransaction] = useState<CreateTransactionInterface>({
     categoryId: 0,
@@ -17,6 +37,35 @@ export const NewTransaction = () => {
     typeId: 0,
     value: 0,
   });
+  const [validationErrors, setValidationErrors] =
+    useState<ValidationErrorsTypes>();
+
+  const handleCreateTransaction = async () => {
+    try {
+      setLoading(true);
+      transactionSchema.safeParse(transaction);
+
+      await createTransaction(transaction);
+      closeBottomSheet();
+    } catch (error) {
+      if (error instanceof zod.ZodError) {
+        const errors = {} as ValidationErrorsTypes;
+
+        error.issues.forEach((issue) => {
+          if (issue.path) {
+            errors[issue.path[0] as keyof CreateTransactionInterface] =
+              issue.message;
+          }
+        });
+
+        setValidationErrors(errors);
+      } else {
+        handlerError(error, 'Falha ao criar transação.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const setTransactionData = (
     key: keyof CreateTransactionInterface,
@@ -49,6 +98,10 @@ export const NewTransaction = () => {
           }}
         />
 
+        {validationErrors?.description && (
+          <ErrorMessage>{validationErrors.description}</ErrorMessage>
+        )}
+
         <CurrencyInput
           className='
             text-white text-lg h-[50px] bg-background-primary 
@@ -65,12 +118,37 @@ export const NewTransaction = () => {
           }}
         />
 
+        {validationErrors?.value && (
+          <ErrorMessage>{validationErrors.value}</ErrorMessage>
+        )}
+
+        <SelectCategoryModal
+          selectedCategory={transaction.categoryId}
+          onSelectCategory={(categoryId) => {
+            setTransactionData('categoryId', categoryId);
+          }}
+        />
+
+        {validationErrors?.categoryId && (
+          <ErrorMessage>{validationErrors.categoryId}</ErrorMessage>
+        )}
+
         <TransactionTypeSelector
           typeId={transaction.typeId}
           setTransactionType={(typeId) => {
             setTransactionData('typeId', typeId);
           }}
         />
+
+        {validationErrors?.typeId && (
+          <ErrorMessage>{validationErrors.typeId}</ErrorMessage>
+        )}
+
+        <View className='my-4'>
+          <AppButton onPress={handleCreateTransaction}>
+            {loading ? <ActivityIndicator color={colors.white} /> : 'Registrar'}
+          </AppButton>
+        </View>
       </View>
     </View>
   );
