@@ -9,6 +9,8 @@ import { colors } from '@/shared/colors';
 import { TransactionTypes } from '@/shared/enums/transaction-types';
 import clsx from 'clsx';
 import { RightAction } from './RightAction';
+import { LeftAction } from './LeftAction';
+import { moneyMapper } from '@/utils/money-mapper';
 
 interface Params {
   transaction: Transaction;
@@ -26,7 +28,9 @@ export const TransactionCard: FC<Params> = ({ transaction }) => {
         marginBottom: 16,
       }}
       renderRightActions={() => <RightAction transactionId={transaction.id} />}
+      renderLeftActions={() => <LeftAction transaction={transaction} />}
       overshootRight={false} // Desativa o efeito de mola ao deslizar
+      overshootLeft={false} // Desativa o efeito de mola ao deslizar
     >
       <View className='h-[140] bg-background-tertiary rounded-[6] p-6'>
         <Text className='text-white text-base'>{transaction.description}</Text>
@@ -36,7 +40,7 @@ export const TransactionCard: FC<Params> = ({ transaction }) => {
             isExpense ? 'text-accent-red' : 'text-accent-brand-light'
           )}
         >
-          {isExpense && '-'}R$ {transaction.value.toFixed(2).replace('.', ',')}
+          {isExpense && '-'}R$ {moneyMapper(transaction.value)}
         </Text>
         <View className='flex-row w-full justify-between items-center'>
           <View className='items-center flex-row mt-3'>

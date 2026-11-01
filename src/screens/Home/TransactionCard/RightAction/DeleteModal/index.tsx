@@ -69,7 +69,10 @@ export const DeleteModal: FC<DeleteModalParams> = ({
                 </View>
 
                 <View className='flex-row justify-end gap-4 w-full p-6 pb-0 pr-0'>
-                  <TouchableOpacity className='w-[100] bg-none border-2 border-accent-brand items-center justify-center p-3 rounded-[6px]'>
+                  <TouchableOpacity
+                    onPress={hiddeModal}
+                    className='w-[100] bg-none border-2 border-accent-brand items-center justify-center p-3 rounded-[6px]'
+                  >
                     <Text className='text-accent-brand'>Cancelar</Text>
                   </TouchableOpacity>
 

@@ -8,6 +8,7 @@ import {
   GetTransactionsResponse,
 } from '@/shared/interfaces/https/get-transactions-request';
 import { TransactionCategory } from '@/shared/interfaces/https/transaction-categories-response';
+import { UpdateTransactionInterface } from '@/shared/interfaces/https/update-transaction-request';
 
 // Vai retornar um array de categorias
 export const getTransactionCategories = async (): Promise<
@@ -49,5 +50,11 @@ export const getTransactions = async (
 
 // Vai deletar uma transação
 export const deleteTransaction = async (id: number) => {
-  await api.delete(`/transactions/${id}`);
+  await api.delete(`/transaction/${id}`);
+};
+
+export const updateTransaction = async (
+  transaction: UpdateTransactionInterface
+) => {
+  await api.put(`/transaction`, transaction);
 };
