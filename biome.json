@@ -33,7 +33,7 @@
         "noAsyncPromiseExecutor": "off"
       },
       "correctness": {
-        "useExhaustiveDependencies": "off",
+        "useExhaustiveDependencies": "warn",
         "noUnreachable": "off",
         "noUnusedImports": "off"
       },

@@ -1,15 +1,8 @@
-import { AppHeader } from '@/components/AppHeader';
 import { useAuthContext } from '@/context/auth.context';
 import { useTransactionContext } from '@/context/transaction.context';
 import { useErrorHandler } from '@/shared/hooks/useErrorHandler';
 import { useEffect } from 'react';
-import {
-  FlatList,
-  RefreshControl,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { FlatList, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ListHeader } from './ListHeader';
 import { TransactionCard } from './TransactionCard';
@@ -23,6 +16,7 @@ export const Home = () => {
     transactions,
     refreshTransactions,
     loading,
+    loadingMoreTransactions,
   } = useTransactionContext();
   const { handlerError } = useErrorHandler();
 
@@ -36,9 +30,12 @@ export const Home = () => {
 
   useEffect(() => {
     (async () => {
-      await Promise.all([handleFetchCategories(), fetchTransactions()]);
+      await Promise.all([
+        handleFetchCategories(),
+        fetchTransactions({ page: 1 }),
+      ]);
     })();
-  }, []);
+  }, [fetchTransactions]);
 
   return (
     <SafeAreaView className='flex-1 bg-background-primary'>
@@ -48,6 +45,8 @@ export const Home = () => {
         keyExtractor={({ id }) => `transaction-${id}`}
         renderItem={({ item }) => <TransactionCard transaction={item} />}
         ListHeaderComponent={ListHeader}
+        onEndReached={() => loadingMoreTransactions}
+        onEndReachedThreshold={0.5}
         refreshControl={
           <RefreshControl
             refreshing={loading}
